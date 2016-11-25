@@ -5,7 +5,7 @@ class DNA:
 
     def test_fun(self):
         '''
-        This is a test
+        This is a . something didff
 
         :return: True or False
 
