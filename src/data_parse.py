@@ -13,6 +13,6 @@ class DNA:
 
         '''
         if 1 == 0:
-            return False
+            return
         else:
             return True
