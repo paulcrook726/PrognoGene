@@ -7,6 +7,8 @@ def funcheck(item):
         return True
     else:
         return False
+
+
 def activation(input_signal):
     """
     This function acts as the cellular activation function.  The sigmoid of input_signal is returned, although
@@ -46,19 +48,22 @@ class NeuralNet(object):
     Blueprints for a neural network object.
     """
 
-    def __init__(self, num_inputs, num_outputs, num_hidden_nodes):
+    def __init__(self, num_inputs, num_outputs, num_hidden_nodes, num_hidden_layers):
         self.num_inputs = num_inputs + 1  # Bias node
         self.num_outputs = num_outputs
         self.hidden_size = num_hidden_nodes
+        self.hidden_layers = num_hidden_layers
 
         self.input_weight_matrix = np.random.rand(self.num_inputs, self.hidden_size)
+        self.hidden_weight_matrices = np.random.rand(self.hidden_size, self.hidden_size, self.hidden_layers)
         self.output_weight_matrix = np.random.rand(self.hidden_size, self.num_outputs)
 
         self.input_values = [1.0] * self.num_inputs
         self.output_values = [1.0] * self.num_outputs
-        self.hidden_values = [1.0] * self.hidden_size
+        self.hidden_values = np.ones((self.hidden_size, self.hidden_layers))
 
         self.input_change = np.zeros((self.num_inputs, self.hidden_size))
+        self.hidden_changes = np.zeros((self.hidden_size, self.hidden_size, self.hidden_layers))
         self.output_change = np.zeros((self.hidden_size, self.num_outputs))
 
     def feed_forward(self, input_data):
@@ -78,21 +83,30 @@ class NeuralNet(object):
         for input_node in range(self.num_inputs - 1):  # Bias node is ignored
             self.input_values[input_node] = input_data[input_node]
 
-        #  calculating hidden matrix data via activation function
+        #  calculating 1st hidden matrix data via activation function
 
         for hidden_node in range(self.hidden_size):
             summation = 0.0  # value containing all the signals from every connected node
             #  ( nodes from the previous layer)
             for input_node in range(self.num_inputs):
                 summation += self.input_values[input_node] * self.input_weight_matrix[input_node][hidden_node]
-            self.hidden_values[hidden_node] = activation(summation)
+            self.hidden_values[hidden_node, 1] = activation(summation)
+
+        for hidden_layer in range(self.hidden_layers):
+            summation = 0.0
+            for hidden_x in range(self.hidden_size):
+                if hidden_x == 0:
+                    continue
+                for hidden_y in range(self.hidden_size):
+                    summation += self.hidden_values[hidden_x, hidden_layer] * \
+                                 self.hidden_weight_matrices[hidden_x, hidden_y, hidden_layer]
 
         #  calculating output layer data via activation function (same as above, except operating on output layer)
 
         for output_node in range(self.num_outputs):
             summation = 0.0
             for hidden_node in range(self.hidden_size):
-                summation += self.hidden_values[hidden_node] * self.output_weight_matrix[hidden_node][output_node]
+                summation += self.hidden_values[hidden_node, -1] * self.output_weight_matrix[hidden_node][output_node]
             self.output_values[output_node] = activation(summation)
 
         return self.output_values[:]  # returns the calculation of the neural net's effects on the data set
@@ -156,6 +170,7 @@ class NeuralNet(object):
             if i % 500 == 0:
                 print("Error: " + str(error) + "\n")
 
+
 with open("coding_sequence_data\chr_1_cs.txt") as f:
     lines = [line.strip('\n') for line in f]
 str_lines = ''.join(lines)
@@ -176,8 +191,8 @@ for gene in coding_genes:
         else:
             pass
     genes.append([gene_data])
-    for gene in genes:
-        print(len(gene[0]))
+for i in genes:
+    print(len(i[0]))
 
 
 
