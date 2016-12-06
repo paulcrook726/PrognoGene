@@ -55,7 +55,7 @@ class NeuralNet(object):
         self.hidden_layers = num_hidden_layers
 
         self.input_weight_matrix = np.random.rand(self.num_inputs, self.hidden_size)
-        self.hidden_weight_matrices = np.random.rand(self.hidden_size, self.hidden_size, self.hidden_layers)
+        self.hidden_weight_matrices = np.random.rand(self.hidden_size, self.hidden_layers)
         self.output_weight_matrix = np.random.rand(self.hidden_size, self.num_outputs)
 
         self.input_values = [1.0] * self.num_inputs
@@ -63,7 +63,7 @@ class NeuralNet(object):
         self.hidden_values = np.ones((self.hidden_size, self.hidden_layers))
 
         self.input_change = np.zeros((self.num_inputs, self.hidden_size))
-        self.hidden_changes = np.zeros((self.hidden_size, self.hidden_size, self.hidden_layers))
+        self.hidden_changes = np.zeros((self.hidden_size, self.hidden_layers))
         self.output_change = np.zeros((self.hidden_size, self.num_outputs))
 
     def feed_forward(self, input_data):
@@ -94,12 +94,11 @@ class NeuralNet(object):
 
         for hidden_layer in range(self.hidden_layers):
             summation = 0.0
-            for hidden_x in range(self.hidden_size):
-                if hidden_x == 0:
-                    continue
-                for hidden_y in range(self.hidden_size):
-                    summation += self.hidden_values[hidden_x, hidden_layer] * \
-                                 self.hidden_weight_matrices[hidden_x, hidden_y, hidden_layer]
+            if hidden_layer == 0:
+                continue
+            for hidden_node in range(self.hidden_size):
+                summation += self.hidden_values[hidden_node, hidden_layer] * \
+                             self.hidden_weight_matrices[hidden_node, hidden_layer]
 
         #  calculating output layer data via activation function (same as above, except operating on output layer)
 
@@ -112,6 +111,22 @@ class NeuralNet(object):
         return self.output_values[:]  # returns the calculation of the neural net's effects on the data set
 
     def back_propogation(self, true_outcomes, learn_rate):
+        """
+
+        :param true_outcomes:
+
+        :type true_outcomes:
+
+        :param learn_rate:
+
+        :type learn_rate:
+
+        :return:
+
+        :rtype:
+
+        """
+
         if len(true_outcomes) != self.num_outputs:
             raise Exception("Mismatching input parameters.  Check instance init data and method call data!")
 
@@ -124,18 +139,29 @@ class NeuralNet(object):
 
         #  calculating error and direction of error between output layer and hidden layer
 
-        error_slope_hid = [0.0] * self.hidden_size
+        error_slope_hid = np.zeros((self.hidden_size, self.hidden_layers))
         for hidden_node in range(self.hidden_size):
             error = 0.0
             for output_node in range(self.num_outputs):
                 error += error_slope_out[output_node] * self.output_weight_matrix[hidden_node][output_node]
-            error_slope_hid[hidden_node] = activation_d(self.hidden_values[hidden_node] * error)
+            error_slope_hid[hidden_node, 0] = activation_d(self.hidden_values[hidden_node, 0] * error)
 
         #  input new weights based on error and slope: output values --> hidden values
 
+        for hidden_layer in range(self.hidden_layers):
+            for hidden_x in range(self.hidden_size):
+
+                for hidden_y in range(self.hidden_size):
+                    if hidden_layer == 0:
+                        continue
+
+
+
+
+
         for hidden_node in range(self.hidden_size):
             for output_node in range(self.num_outputs):
-                change = error_slope_out[output_node] * self.hidden_values[hidden_node]
+                change = error_slope_out[output_node] * self.hidden_values[hidden_node, -1]
                 self.output_weight_matrix[hidden_node][output_node] -= learn_rate * \
                                                                        change + \
                                                                        self.output_change[hidden_node][output_node]
