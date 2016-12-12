@@ -122,7 +122,7 @@ class NeuralNet(object):
 
         return error/len(self.output_values)
 
-    def train(self, training_data, iterations=1000, learn_rate=0.002):
+    def train(self, training_data, iterations=200, learn_rate=0.001):
         for i in range(iterations):
             inputs = training_data[0]
             desired = training_data[1]
