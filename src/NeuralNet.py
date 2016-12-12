@@ -33,8 +33,8 @@ class NeuralNet(object):
         self.num_outputs = num_outputs
         self.hidden_size = num_hidden_nodes
 
-        self.input_weight_matrix = np.random.rand(self.num_inputs, self.hidden_size)
-        self.output_weight_matrix = np.random.rand(self.hidden_size, self.num_outputs)
+        self.input_weight_matrix = 2 * np.random.rand(self.num_inputs, self.hidden_size) - 1
+        self.output_weight_matrix = 2 * np.random.rand(self.hidden_size, self.num_outputs) - 1
 
         self.input_values = [1.0] * self.num_inputs
         self.output_values = [1.0] * self.num_outputs
@@ -84,7 +84,7 @@ class NeuralNet(object):
 
         error_slope_out = [0.0] * self.num_outputs
         for output_node in range(self.num_outputs):
-            error = -(true_outcome - self.output_values[output_node])
+            error = -(true_outcome[output_node] - self.output_values[output_node])
             error_slope_out[output_node] = activation_d(self.output_values[output_node]) * error
 
         #  calculating error and direction of error between output layer and hidden layer
@@ -112,21 +112,21 @@ class NeuralNet(object):
                 change = error_slope_hid[hidden_node] * self.input_values[input_node]
                 self.input_weight_matrix[input_node][hidden_node] -= learn_rate * change + \
                                                                      self.input_change[input_node][hidden_node]
-                self.input_change[input_node][hidden_node] = change\
+                self.input_change[input_node][hidden_node] = change
 
         #  calculate new error
 
         error = 0.0
         for i in range(len(self.output_values)):
-            error += 0.5 * (true_outcome - self.output_values[i]) ** 2
+            error += (true_outcome[i] - self.output_values[i]) ** 2
 
-        return error
+        return error/len(self.output_values)
 
-    def train(self, training_data, iterations=500, learn_rate=0.002):
+    def train(self, training_data, iterations=1000, learn_rate=0.002):
         for i in range(iterations):
             inputs = training_data[0]
             desired = training_data[1]
             self.feed_forward(inputs)
             error = self.back_propogation(desired, learn_rate)
-            if i % 500 == 0:
+            if i % 250 == 0:
                 print("Error: " + str(error) + "\n")
