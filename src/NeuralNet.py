@@ -130,3 +130,7 @@ class NeuralNet(object):
             error = self.back_propogation(desired, learn_rate)
             if i % 250 == 0:
                 print("Error: " + str(error) + "\n")
+
+    def predict(self, data):
+        self.feed_forward(data)
+        return self.output_values
