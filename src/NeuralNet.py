@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 
 def activation(input_signal):
@@ -20,6 +19,9 @@ def activation(input_signal):
 
 
 def activation_d(x):
+    """
+    This function activates the feed forward function. Its require for calculating hidden data
+    """
 
     return activation(x) * (1.0 - activation(x))
 
@@ -43,9 +45,17 @@ class NeuralNet(object):
 
         self.input_change = np.zeros((self.num_inputs, self.hidden_size))
         self.output_change = np.zeros((self.hidden_size, self.num_outputs))
+        """
+
+        This function creates a weight matrix out of input matrix and hidden size of the input date's matrix.
+        This is specially useful for creating a back propagation with which we can plan a Multilayer neural network
+        Multilayer means: multiple input and one output
+        """
+
 
     def feed_forward(self, input_data):
         """
+        This function jumps from one layer to the next
 
         :param input_data:
         :type input_data:
