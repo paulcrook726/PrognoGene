@@ -4,7 +4,7 @@ import pickle
 import os
 import matplotlib.pyplot as plt
 
-NN_VIEW_LENGTH = 100
+NN_VIEW_LENGTH = 500
 
 
 def seq_to_num(letter):
@@ -28,11 +28,19 @@ def subdivide_seq(seq_data, n):
     return chunks
 
 
+def add_zero(seq_data, n):
+    while len(seq_data) < n:
+        seq_data.append(0)
+    return seq_data
+
+
 def proc(filename):
     with open(filename) as f:
-        lines = [line.strip('\n') for line in f if '>' not in line]
+        lines = [line.strip('\n') for line in f]
     lines_str = ''.join(lines)
-    seq_list = subdivide_seq([seq_to_num(letter) for letter in list(lines_str)], NN_VIEW_LENGTH)
+    lines_list = lines_str.split('>')
+    seq_list = subdivide_seq(add_zero([seq_to_num(gene) for gene in lines_list], NN_VIEW_LENGTH), NN_VIEW_LENGTH)
+
     return seq_list
 
 
@@ -60,9 +68,9 @@ def main():
     args = parser.parse_args()
     path = args.seq_path
     if args.c is False:
-        c_val = 1
+        c_val = [1]
     else:
-        c_val = 0
+        c_val = [0]
     seq_paths = []
     for root, dirs, files in os.walk(path, topdown=False):
         for name in files:

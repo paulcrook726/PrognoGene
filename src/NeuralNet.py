@@ -119,18 +119,17 @@ class NeuralNet(object):
 
         error = 0.0
         for i in range(len(self.output_values)):
-            error += (true_outcome[i] - self.output_values[i]) ** 2
+            error += 0.5 * (true_outcome[i] - self.output_values[i]) ** 2
 
         return error/len(self.output_values)
 
-    def train(self, training_data, iterations=200, learn_rate=0.01):
+    def train(self, training_data, iterations=20, learn_rate=0.01):
         for i in range(iterations):
             inputs = training_data[0]
             desired = training_data[1]
             self.feed_forward(inputs)
             error = self.back_propogation(desired, learn_rate)
-            if i % 250 == 0:
-                print("Error: " + str(error) + "\n")
+            print("Error: " + str(error) + "\n")
 
     def predict(self, data):
         self.feed_forward(data)
