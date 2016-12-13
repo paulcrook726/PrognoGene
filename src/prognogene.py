@@ -2,6 +2,7 @@ import NeuralNet
 import argparse
 import pickle
 import os
+import matplotlib.pyplot as plt
 
 NN_VIEW_LENGTH = 100
 
@@ -67,11 +68,17 @@ def main():
         for name in files:
             seq_paths.append(os.path.join(path, name))
     if args.f is False:
+        outputs = []
         with open('NN.pickle', 'rb') as handle:
             neural_net = pickle.load(handle)
         for file in seq_paths:
             with open(file) as f:
-                print(f)
+                proc_seq = proc(file)
+                for seq in proc_seq:
+                    output = neural_net.predict(seq)
+                    outputs.append(output)
+            plt.plot(proc_seq, outputs)
+            plt.savefig('plot' + str(file) + '.png')
     else:
         if os.path.isfile('NN.pickle') is True:
             with open('NN.pickle', 'rb') as handle:

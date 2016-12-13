@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 def activation(input_signal):
@@ -15,12 +16,12 @@ def activation(input_signal):
     :rtype:
 
     """
-    return 1 / (1 + np.exp(-input_signal))  # sigmoid activation function
+    return 1. / (1. + np.exp(-input_signal))  # sigmoid activation function
 
 
 def activation_d(x):
 
-    return activation(x) * (1.0 - activation(x))  # getting input from output
+    return activation(x) * (1.0 - activation(x))
 
 
 class NeuralNet(object):
@@ -122,7 +123,7 @@ class NeuralNet(object):
 
         return error/len(self.output_values)
 
-    def train(self, training_data, iterations=200, learn_rate=0.001):
+    def train(self, training_data, iterations=200, learn_rate=0.01):
         for i in range(iterations):
             inputs = training_data[0]
             desired = training_data[1]
