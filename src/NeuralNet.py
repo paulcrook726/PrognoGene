@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def activation(input_signal):
     """
     This function acts as the cellular activation function.  The sigmoid of input_signal is returned, although
