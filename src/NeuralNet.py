@@ -57,10 +57,10 @@ class NeuralNet(object):
         """
         This function jumps from one layer to the next
 
-        :param input_data:
-        :type input_data:
-        :return:
-        :rtype:
+        :param input_data: Data being fed into neural network
+        :type input_data: lst
+        :return: self.output_layer
+        :rtype: lst
         """
 
         if len(input_data) != self.num_inputs - 1:
@@ -91,6 +91,20 @@ class NeuralNet(object):
         return self.output_values[:]  # returns the calculation of the neural net's effects on the data set
 
     def back_propogation(self, true_outcome, learn_rate):
+        """
+
+        :param true_outcome: list of given outcome(classification, 0 or 1)
+
+        :type true_outcome: lst
+
+        :param learn_rate: The learning rate of the network
+
+        :type learn_rate: float
+
+        :return: error
+
+        :rtype: float
+        """
         #  calculating error and direction of error between true outcome and predicted outcome layer values
 
         error_slope_out = [0.0] * self.num_outputs
@@ -134,6 +148,27 @@ class NeuralNet(object):
         return error/len(self.output_values)
 
     def train(self, training_data, iterations=20, learn_rate=0.01):
+        """
+        This method trains the neural network, iterating through a given training set, back-propogating the error, and
+        adjusting the weights.
+
+        :param training_data: the list of training data and its corresponding classification.
+
+        :type training_data: lst
+
+        :param iterations: amount of iterations
+
+        :type iterations: int
+
+        :param learn_rate: learning rate of the algorith
+
+        :type learn_rate: int
+
+        :return:
+
+        :rtype:
+
+        """
         for i in range(iterations):
             inputs = training_data[0]
             desired = training_data[1]
@@ -143,5 +178,16 @@ class NeuralNet(object):
                 print("Error: " + str(error) + "\n")
 
     def predict(self, data):
+        """
+        Give the outputs of the data from the network (output_layer)
+        :param data:
+
+        :type data:
+
+        :return:
+
+        :rtype:
+
+        """
         self.feed_forward(data)
         return self.output_values

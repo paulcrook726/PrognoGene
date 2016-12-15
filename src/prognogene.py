@@ -49,17 +49,6 @@ def add_zero(seq_data, n):
 
 
 def proc(filename):
-    """
-
-    :param filename:
-
-    :type filename:
-
-    :return:
-
-    :rtype:
-
-    """
     with open(filename) as f:
         lines = [line.strip('\n') for line in f]
     lines_str = ''.join(lines)

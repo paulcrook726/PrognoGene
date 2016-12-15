@@ -10,7 +10,7 @@ config = {
     'download_url': 'Where to download it.',
     'author_email': 'paul.crook@uranus.uni-freiburg.de',
     'version': '0.1a',
-    'install_requires': ['sphinx_rtd_theme'],
+    'install_requires': ['matplotlib', 'numpy', ''],
     'name': 'PrognoGene'
 }
 
