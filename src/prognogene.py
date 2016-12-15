@@ -95,7 +95,7 @@ def main():
             neural_net = pickle.load(handle)
         for file in seq_paths:
             with open(file) as f:
-                proc_seq = proc(file)
+                proc_seq = proc(f)
                 for chunk in proc_seq:
                     output = neural_net.predict(chunk)
                     outputs.append(output)
